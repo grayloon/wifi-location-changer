@@ -1,39 +1,38 @@
 #!/bin/bash
 
-# automatically change configuration of Mac OS X based on location
+# automatically change location settings based on SSID
 exec &>/usr/local/var/log/locationchanger.log
 # redirect all IO to /dev/null (comment this out if you want to debug)
 # exec 1>/dev/null 2>/dev/null
 
-# get a little breather before we get data for things to settle down
-sleep 2
+# take a little breather before we get data
+sleep 1
 
-# get various system information
-SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I\
- | grep ' SSID:' | cut -d ':' -f 2 | tr -d ' '`
+# get current SSID
+SSID=`networksetup -getairportnetwork en0 | cut -d ':' -f 2 | cut -c 2-`
 
-# basic pattern matching to get all location names separated by newlines
-LOCATION_NAMES=`scselect | tail -n +2 | cut -d "(" -f 2 | cut -d ")" -f 1`
-CURRENT_LOCATION=`scselect | grep " \* " | cut -d "(" -f 2 | cut -d ")" -f 1`
+# get location information
+LOCATION_NAMES=`networksetup -listlocations`
+CURRENT_LOCATION=`networksetup -getcurrentlocation`
 
-# no brackets as we the grep will return a status code depending on whether the SSID has an own Location
-if echo "$LOCATION_NAMES" | egrep -q "^$SSID$"; then
-  NEW_LOCATION="$SSID"
+# check for office SSIDs
+if [[ "$SSID" =~ "GrayLoon" ]]; then
+  NEW_LOCATION="Gray Loon"
 else
-  # auto does not seem to be working on Mac OS X Lion, but Automatic does
-  if echo Automatic | grep -q "$LOCATION_NAMES"; then
-    NEW_LOCATION=Automatic
-  elif echo auto | grep -q "$LOCATION_NAMES"; then
-    NEW_LOCATION=auto
+  # use Other if no matching SSID found
+  if echo Other | grep -q "$LOCATION_NAMES"; then
+    NEW_LOCATION=Other
   else
-    echo "Automatic location was not found!"
-    echo "The following locations are known:"
+    echo "Other location was not found!"
+    echo "The following locations are available:"
     echo "$LOCATION_NAMES"
   fi
 fi
 
-if [ "x$NEW_LOCATION" != "x" -a "x$NEW_LOCATION" != "x$CURRENT_LOCATION" ]; then
+# switch the location
+if [ "x$NEW_LOCATION" == "x$CURRENT_LOCATION" ]; then
+    echo "Nothing to do"
+else
     echo "Changing to $NEW_LOCATION"
-    scselect "$NEW_LOCATION"
+    networksetup -switchtolocation "$NEW_LOCATION"
 fi
-
