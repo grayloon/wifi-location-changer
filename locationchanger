@@ -5,15 +5,15 @@ exec &>/usr/local/var/log/locationchanger.log
 # redirect all IO to /dev/null (comment this out if you want to debug)
 # exec 1>/dev/null 2>/dev/null
 
-# take a little breather before we get data
-sleep 1
+# pause before we fetch data
+sleep 2
 
 # get current SSID
-SSID=`networksetup -getairportnetwork en0 | cut -d ':' -f 2 | cut -c 2-`
+SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | grep ' SSID:' | cut -d ':' -f 2 | cut -c 2-`
 
 # get location information
-LOCATION_NAMES=`networksetup -listlocations`
-CURRENT_LOCATION=`networksetup -getcurrentlocation`
+LOCATION_NAMES=`scselect | tail -n +2 | cut -d "(" -f 2 | cut -d ")" -f 1`
+CURRENT_LOCATION=`scselect | grep " \* " | cut -d "(" -f 2 | cut -d ")" -f 1`
 
 # check for office SSIDs
 if [[ "$SSID" =~ "GrayLoon" ]]; then
@@ -34,5 +34,5 @@ if [ "x$NEW_LOCATION" == "x$CURRENT_LOCATION" ]; then
     echo "Nothing to do"
 else
     echo "Changing to $NEW_LOCATION"
-    networksetup -switchtolocation "$NEW_LOCATION"
+    scselect "$NEW_LOCATION"
 fi
