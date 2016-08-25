@@ -1,21 +1,20 @@
 #WiFi Location Changer
-* Automatically change location when wifi connection changes in Mac OS X
-* Allows having different IP settings depending on the wifi SSID
+* Automatically change location when WiFi connection changes in Mac OS X
+* Allows having different IP settings depending on the WiFi SSID
 * Automatically select the location corresponding to the SSID, if none
-  exists: select the "auto" location
-
-Simplified location changer based on http://tech.inhelsinki.nl/locationchanger/
+  exists: select the "Other" location
 
 ##Installation
-Note: location name should be the same as the name of SSID with all spaces removed. 
+Note: location name should be the same as the name of SSID with all spaces removed.
 
-For example: **SSID**: ```My WiFi Hotspot``` Will translate to **Location Name**: ```MyWiFiHotspot``` 
+For example: **SSID**: ```Gray Loon``` Will translate to **Location Name**: ```GrayLoon```
 
-    cp locationchanger /usr/local/bin
+    sudo mkdir /usr/local/var/log
+    sudo cp locationchanger /usr/local/bin
     cp LocationChanger.plist ~/Library/LaunchAgents/
+    launchctl unload ~/Library/LaunchAgents/LocationChanger.plist
     launchctl load ~/Library/LaunchAgents/LocationChanger.plist
 
 or
 
     ./install
-
