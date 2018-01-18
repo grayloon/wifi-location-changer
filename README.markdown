@@ -10,7 +10,7 @@ Note: location name should be the same as the name of SSID with all spaces remov
 For example: **SSID**: ```Gray Loon``` Will translate to **Location Name**: ```GrayLoon```
 
     sudo mkdir /usr/local/var/log
-    sudo cp locationchanger /usr/local/bin
+    sudo cp locationchanger /usr/local/bin/
     cp LocationChanger.plist ~/Library/LaunchAgents/
     launchctl unload ~/Library/LaunchAgents/LocationChanger.plist
     launchctl load ~/Library/LaunchAgents/LocationChanger.plist
