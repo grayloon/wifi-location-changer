@@ -7,7 +7,7 @@
 ##Installation
 Note: location name should be the same as the name of SSID with all spaces removed.
 
-For example: **SSID**: ```Gray Loon``` Will translate to **Location Name**: ```GrayLoon```
+For example: **SSID**: ```GrayLoon``` Will translate to **Location Name**: ```Gray Loon```
 
     sudo mkdir /usr/local/var/log
     sudo cp locationchanger /usr/local/bin/
